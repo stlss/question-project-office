@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using QuestionProjectOfficeDb.Configurations;
 using QuestionProjectOfficeDb.Entities;
 
 namespace QuestionProjectOfficeDb
@@ -9,6 +10,14 @@ namespace QuestionProjectOfficeDb
 
         public DbSet<QuestionCategory> QuestionCategories { get; set; }
 
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new QuestionAnswerPairConfiguration());
+            modelBuilder.ApplyConfiguration(new QuestionCategoryConfiguration());
+
+            base.OnModelCreating(modelBuilder);
+        }
 
         public static DbContextOptions<QuestionProjectOfficeContext> BuildDbContextOptions(string connectionString, ProviderDb providerDb)
         {

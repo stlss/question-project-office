@@ -8,7 +8,7 @@
 
         public string Answer { get; set; } = null!;
 
-        public QuestionCategory? Category { get; set; }
+        public QuestionCategory? QuestionCategory { get; set; }
 
         public int Populatiry { get; set; } = 0;
 
