@@ -17,4 +17,8 @@
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\QuestionProjectOfficeDB\QuestionProjectOfficeDb.csproj" />
+  </ItemGroup>
+
 </Project>
