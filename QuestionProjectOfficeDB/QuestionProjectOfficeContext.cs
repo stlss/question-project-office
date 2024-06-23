@@ -4,7 +4,8 @@ using QuestionProjectOfficeDb.Entities;
 
 namespace QuestionProjectOfficeDb
 {
-    public class QuestionProjectOfficeContext(DbContextOptions<QuestionProjectOfficeContext> options) : DbContext(options)
+    public class QuestionProjectOfficeContext(DbContextOptions<QuestionProjectOfficeContext> options) 
+        : DbContext(options)
     {
         public DbSet<QuestionAnswerPair> QuestionAnswerPairs { get; set; }
 
@@ -18,6 +19,7 @@ namespace QuestionProjectOfficeDb
 
             base.OnModelCreating(modelBuilder);
         }
+
 
         public static DbContextOptions<QuestionProjectOfficeContext> BuildDbContextOptions(string connectionString, ProviderDb providerDb)
         {
