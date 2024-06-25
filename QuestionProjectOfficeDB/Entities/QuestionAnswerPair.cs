@@ -9,6 +9,8 @@
         public string Answer { get; set; } = null!;
 
 
+        public Guid? QuestionCategoryId { get; set; }
+
         public QuestionCategory? QuestionCategory { get; set; }
 
 

@@ -3,15 +3,174 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:bh="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:vm="clr-namespace:QuestionProjectOffice.ViewModels.Windows"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="QuestionProjectOffice" Height="500" Width="1050"
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
 
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    
-    <Grid>
 
+    <Window.Resources>
+        <Style x:Key="ButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignPaperLightButton}">
+            <Setter Property="Height" Value="27.5"/>
+            <Setter Property="Width" Value="180"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--Зона категорий вопросов-->
+        <Grid Grid.Column="0" 
+              Margin="10 5 5 5">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="6*"/>
+                <RowDefinition Height="3.6*"/>
+                <RowDefinition Height="2.75*"/>
+            </Grid.RowDefinitions>
+            
+            <!--Основные категории вопросов-->
+            <GroupBox Grid.Row="0"
+                      Margin="0 0 0 2.5"
+                      Header="Категории вопросов"
+                      FontSize="15">
+
+                <ListBox ItemsSource="{Binding QuestionCategories}"
+                         SelectedItem="{Binding SelectedQuestionCategory}">
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"
+                                       ToolTip="{Binding Name}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </GroupBox>
+            
+            <!--Другие категории вопросов-->
+            <GroupBox Grid.Row="1"
+                      Margin="0 2.5"
+                      Header="Другие категории вопросов"
+                      FontSize="15">
+
+                <ItemsControl>
+                    <ListBoxItem Content="Все вопросы"
+                                 ToolTip="Все вопросы">
+
+                        <ListBoxItem.InputBindings>
+                            <MouseBinding Command="{Binding SelectAllQuestionsCommand}" MouseAction="LeftClick"/>
+                        </ListBoxItem.InputBindings>
+                    </ListBoxItem>
+
+                    <ListBoxItem Content="Вопросы без категорий"
+                                 ToolTip="Вопросы без категорий">
+
+                        <ListBoxItem.InputBindings>
+                            <MouseBinding Command="{Binding SelectQuestionsWithoutCategoriesCommand}" MouseAction="LeftClick"/>
+                        </ListBoxItem.InputBindings>
+                    </ListBoxItem>
+                </ItemsControl>
+            </GroupBox>
+            
+            <!--Добавление, изменение, удаление категорий вопросов-->
+            <Grid Grid.Row="2" Margin="0 2.5 0 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                
+                <!--Добавление категории-->
+                <Button Grid.Row="0" 
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding CreateQuestionCategoryCommand}"
+                        Content="Добавить категорию"
+                        ToolTip="Добавить категорию"/>
+
+                <!--Изменение категории-->
+                <Button Grid.Row="1" 
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding UpdateQuestionCategoryCommand}"
+                        Content="Изменить категорию"
+                        ToolTip="Изменить категорию"/>
+
+                <!--Удаление категории-->
+                <Button Grid.Row="2" 
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding DeleteQuestionCategoryCommand}"
+                        Content="Удалить категорию"
+                        ToolTip="Удалить категорию"/>
+            </Grid>
+        </Grid>
+        
+        <!--Зона вопросов и ответов-->
+        <Grid Grid.Column="1"
+              Margin="5 5 10 5">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="11.44*"/>
+                <RowDefinition Height="0.92*"/>
+            </Grid.RowDefinitions>
+            
+            <!--Вопросы и ответы-->
+            <GroupBox Grid.Row="0"
+                      Margin="0 0 0 2.5"
+                      Header="Вопросы и ответы"
+                      FontSize="15">
+
+                    <DataGrid ItemsSource="{Binding SelectedQuestionAnswerPairs}"
+                              SelectedItem="{Binding SelectedQuestionAnswerPair}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Вопрос" Binding="{Binding Question}"/>
+                            <DataGridTextColumn Header="Ответ" Binding="{Binding Answer}"/>
+                            <DataGridTextColumn Header="Категория вопроса" Binding="{Binding QuestionCategory.Name}"/>
+                            <DataGridTextColumn Header="Популярность" Binding="{Binding Populatiry}"/>
+                            <DataGridTextColumn Header="Дата создания/изменения" Binding="{Binding DateTime}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+            </GroupBox>
+            
+            <!--Добавление, изменение, удаление вопросов и ответов-->
+            <Grid Grid.Row="1"
+                  Margin="0 2.5 0 0">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <!--Добавление вопроса-->
+                <Button Grid.Column="0" 
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding CreateQuestionCommand}"
+                        Content="Добавить вопрос"
+                        ToolTip="Добавить вопрос"/>
+
+                <!--Изменение вопроса-->
+                <Button Grid.Column="1" 
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding UpdateQuestionCommand}"
+                        Content="Изменить вопрос"
+                        ToolTip="Изменить вопрос"/>
+
+                <!--Удаление вопроса-->
+                <Button Grid.Column="2" 
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding DeleteQuestionCommand}"
+                        Content="Удалить вопрос"
+                        ToolTip="Удалить вопрос"/>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

@@ -2,6 +2,6 @@
 {
     internal static class ConnectionQuestionProjectOfficeDb
     {
-        public static string PostgreSqlConnectionString => "Host=localhost;Port=5432;Database=QuestionProjectOffice;Username=postgres;Password=12345";
+        public static string LocalPostgreSqlConnectionString => "Host=localhost;Port=5432;Database=QuestionProjectOfficeDB;Username=postgres;Password=12345";
     }
 }

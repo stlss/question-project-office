@@ -10,7 +10,9 @@ namespace QuestionProjectOfficeDb.Configurations
         {
             builder.HasKey(p => p.Id);
 
-            builder.HasOne(p => p.QuestionCategory).WithMany(c => c.QuestionAnswerPairs);
+            builder.HasOne(p => p.QuestionCategory).
+                WithMany(c => c.QuestionAnswerPairs).
+                HasForeignKey(fk => fk.QuestionCategoryId);
         }
     }
 }
