@@ -6,8 +6,8 @@
         xmlns:bh="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:vm="clr-namespace:QuestionProjectOffice.ViewModels.Windows"
         mc:Ignorable="d"
-        Title="QuestionProjectOffice" Height="500" Width="850"
-        WindowStartupLocation="CenterScreen" MinHeight="500" MinWidth="850" x:Name="w">
+        Title="QuestionProjectOffice" Height="500" Width="1050"
+        WindowStartupLocation="CenterScreen" MinHeight="500" MinWidth="1050" x:Name="w">
 
     <Window.DataContext>
         <vm:MainWindowViewModel/>
@@ -65,7 +65,7 @@
                                  ToolTip="Все вопросы">
 
                         <ListBoxItem.InputBindings>
-                            <MouseBinding Command="{Binding SelectQuestionsWithoutCategoriesCommand}" MouseAction="LeftClick"/>
+                            <MouseBinding Command="{Binding SelectAllQuestionsCommand}" MouseAction="LeftClick"/>
                         </ListBoxItem.InputBindings>
                     </ListBoxItem>
 
@@ -125,6 +125,19 @@
                       Header="Вопросы и ответы"
                       FontSize="15">
 
+                    <DataGrid ItemsSource="{Binding SelectedQuestionAnswerPairs}"
+                              SelectedItem="{Binding SelectedQuestionAnswerPair}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Вопрос" Binding="{Binding Question}"/>
+                            <DataGridTextColumn Header="Ответ" Binding="{Binding Answer}"/>
+                            <DataGridTextColumn Header="Категория вопроса" Binding="{Binding QuestionCategory.Name}"/>
+                            <DataGridTextColumn Header="Популярность" Binding="{Binding Populatiry}"/>
+                            <DataGridTextColumn Header="Дата создания/изменения" Binding="{Binding DateTime}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
             </GroupBox>
             
             <!--Добавление, изменение, удаление вопросов и ответов-->

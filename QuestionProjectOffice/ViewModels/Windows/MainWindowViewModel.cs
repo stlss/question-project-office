@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.EntityFrameworkCore;
 using QuestionProjectOffice.Models;
 using QuestionProjectOfficeDb;
 using QuestionProjectOfficeDb.Entities;
@@ -16,10 +17,8 @@ namespace QuestionProjectOffice.ViewModels.Windows
         #region Свойства
 
         #region Категории вопросов
-        // Отображаемые категории вопросов
         public List<QuestionCategory> QuestionCategories { get; private set; }
 
-        // Выбранная категория вопросов пользователем
         private QuestionCategory? _selectedQuestionCategory;
         public QuestionCategory? SelectedQuestionCategory
         {
@@ -29,8 +28,38 @@ namespace QuestionProjectOffice.ViewModels.Windows
                 if (!SetProperty(ref _selectedQuestionCategory, value))
                     return;
 
+                if (_selectedQuestionCategory != null)
+                    SelectedQuestionAnswerPairs = _selectedQuestionCategory.QuestionAnswerPairs;
+
                 UpdateQuestionCategoryCommand.NotifyCanExecuteChanged();
                 DeleteQuestionCategoryCommand.NotifyCanExecuteChanged();
+            }
+        }
+        #endregion
+
+        #region Вопросы и ответы
+        public List<QuestionAnswerPair> AllQuestionAnswerPairs { get; private set; }
+
+        public List<QuestionAnswerPair> QuestionAnswerPairsWithoutCategory { get; private set; }
+
+        private List<QuestionAnswerPair> _selectedQuestionAnswerPairs;
+        public List<QuestionAnswerPair> SelectedQuestionAnswerPairs
+        {
+            get => _selectedQuestionAnswerPairs;
+            set => SetProperty(ref _selectedQuestionAnswerPairs, value);
+        }
+
+        private QuestionAnswerPair? _selectedQuestionAnswerPair;
+        public QuestionAnswerPair? SelectedQuestionAnswerPair 
+        {
+            get => _selectedQuestionAnswerPair;
+            set
+            {
+                if (!SetProperty(ref _selectedQuestionAnswerPair, value))
+                    return;
+
+                UpdateQuestionCommand.NotifyCanExecuteChanged();
+                DeleteQuestionCommand.NotifyCanExecuteChanged();
             }
         }
         #endregion
@@ -83,6 +112,7 @@ namespace QuestionProjectOffice.ViewModels.Windows
         private void ExecuteSelectAllQuestionsCommand()
         {
             SelectedQuestionCategory = null;
+            SelectedQuestionAnswerPairs = AllQuestionAnswerPairs;
         }
         #endregion
 
@@ -92,6 +122,7 @@ namespace QuestionProjectOffice.ViewModels.Windows
         private void ExecuteSelectQuestionsWithoutCategoriesCommand()
         {
             SelectedQuestionCategory = null;
+            SelectedQuestionAnswerPairs = QuestionAnswerPairsWithoutCategory;
         }
         #endregion
 
@@ -115,6 +146,8 @@ namespace QuestionProjectOffice.ViewModels.Windows
         {
 
         }
+
+        private bool CanExecuteUpdateQuestionCommand() => _selectedQuestionAnswerPair != null;
         #endregion
 
         #region Удалить вопрос
@@ -124,6 +157,8 @@ namespace QuestionProjectOffice.ViewModels.Windows
         {
 
         }
+
+        private bool CanExecuteDeleteQuestionCommand() => _selectedQuestionAnswerPair != null;
         #endregion
 
         #endregion
@@ -141,6 +176,16 @@ namespace QuestionProjectOffice.ViewModels.Windows
                 FillDataBase();
             #endregion
 
+            #region Свойства
+            QuestionCategories = _dbContext.QuestionCategories.OrderBy(c => c.Name).ToList();
+            foreach (var c in QuestionCategories)
+                c.QuestionAnswerPairs = _dbContext.QuestionAnswerPairs.Where(p => p.QuestionCategoryId == c.Id).ToList();
+
+            AllQuestionAnswerPairs = _dbContext.QuestionAnswerPairs.OrderBy(p => p.DateTime).ToList();
+            QuestionAnswerPairsWithoutCategory = _dbContext.QuestionAnswerPairs.Where(p => p.QuestionCategory == null).OrderBy(p => p.DateTime).ToList();
+            _selectedQuestionAnswerPairs = AllQuestionAnswerPairs;
+            #endregion
+
             #region Команды
             CreateQuestionCategoryCommand = new(ExecuteCreateQuestionCategoryCommand);
             UpdateQuestionCategoryCommand = new(ExecuteUpdateQuestionCategoryCommand, CanExecuteUpdateQuestionCategoryCommand);
@@ -150,11 +195,9 @@ namespace QuestionProjectOffice.ViewModels.Windows
             SelectQuestionsWithoutCategoriesCommand = new(ExecuteSelectQuestionsWithoutCategoriesCommand);
 
             CreateQuestionCommand = new(ExecuteCreateQuestionCommand);
-            UpdateQuestionCommand = new(ExecuteUpdateQuestionCommand);
-            DeleteQuestionCommand = new(ExecuteDeleteQuestionCommand);
+            UpdateQuestionCommand = new(ExecuteUpdateQuestionCommand, CanExecuteUpdateQuestionCommand);
+            DeleteQuestionCommand = new(ExecuteDeleteQuestionCommand, CanExecuteDeleteQuestionCommand);
             #endregion
-
-            QuestionCategories = _dbContext.QuestionCategories.OrderBy(c => c.Name).ToList();
         }
 
 
@@ -179,11 +222,11 @@ namespace QuestionProjectOffice.ViewModels.Windows
                 ToList();
 
 
-            var questionAnswerPairs = Enumerable.Range(1, 7).
+            var questionAnswerPairs = Enumerable.Range(0, 7).
                 Select(x => new QuestionAnswerPair()
                 {
-                    Question = $"Вопрос №{x}",
-                    Answer = $"Ответ №{x}",
+                    Question = $"Вопрос №{7 - x}",
+                    Answer = $"Ответ №{7 - x}",
                     DateTime = DateTime.UtcNow.AddDays(-x / 2).AddHours(-x).AddMinutes(-x * 2).AddSeconds(-x * 4)
                 }).
                 ToList();
