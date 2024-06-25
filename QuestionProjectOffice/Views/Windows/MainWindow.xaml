@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:QuestionProjectOffice.ViewModels.Windows"
         mc:Ignorable="d"
         Title="QuestionProjectOffice" Height="500" Width="1050"
-        WindowStartupLocation="CenterScreen" MinHeight="500" MinWidth="1050" x:Name="w">
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
 
     <Window.DataContext>
         <vm:MainWindowViewModel/>

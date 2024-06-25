@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
 using QuestionProjectOffice.Models;
 using QuestionProjectOfficeDb;
 using QuestionProjectOfficeDb.Entities;
