@@ -6,6 +6,6 @@
 
         public string Name { get; set; } = null!;
 
-        public List<QuestionAnswerPair>? QuestionAnswerPairs { get; set; }
+        public List<QuestionAnswerPair> QuestionAnswerPairs { get; set; } = [];
     }
 }
