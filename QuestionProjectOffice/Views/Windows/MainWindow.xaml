@@ -5,13 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:QuestionProjectOffice.ViewModels.Windows"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="QuestionProjectOffice" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen" MinHeight="450" MinWidth="800">
 
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    
-    <Grid>
 
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        
+        <!--Категории вопросов-->
+        <Grid Grid.Column="0" 
+              Margin="10 5 5 10">
+
+            <GroupBox Header="Категории вопросов"
+                      FontSize="16">
+
+            </GroupBox>
+        </Grid>
+        
+        <!--Вопросы и ответы-->
+        <Grid Grid.Column="1"
+              Margin="5 5 10 10">
+
+            <GroupBox Header="Вопросы и ответы"
+                      FontSize="16">
+
+            </GroupBox>
+        </Grid>
     </Grid>
 </Window>
