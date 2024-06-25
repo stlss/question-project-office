@@ -1,4 +1,6 @@
-﻿namespace QuestionProjectOfficeDb.Entities
+﻿using System.Collections.ObjectModel;
+
+namespace QuestionProjectOfficeDb.Entities
 {
     public class QuestionCategory
     {
@@ -6,6 +8,6 @@
 
         public string Name { get; set; } = null!;
 
-        public List<QuestionAnswerPair> QuestionAnswerPairs { get; set; } = [];
+        public ObservableCollection<QuestionAnswerPair> QuestionAnswerPairs { get; set; } = [];
     }
 }

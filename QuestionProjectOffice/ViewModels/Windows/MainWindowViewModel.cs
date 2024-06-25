@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using QuestionProjectOffice.Models;
 using QuestionProjectOfficeDb;
 using QuestionProjectOfficeDb.Entities;
+using System.Collections.ObjectModel;
 
 namespace QuestionProjectOffice.ViewModels.Windows
 {
@@ -16,7 +17,7 @@ namespace QuestionProjectOffice.ViewModels.Windows
         #region Свойства
 
         #region Категории вопросов
-        public List<QuestionCategory> QuestionCategories { get; private set; }
+        public ObservableCollection<QuestionCategory> QuestionCategories { get; private set; }
 
         private QuestionCategory? _selectedQuestionCategory;
         public QuestionCategory? SelectedQuestionCategory
@@ -37,12 +38,12 @@ namespace QuestionProjectOffice.ViewModels.Windows
         #endregion
 
         #region Вопросы и ответы
-        public List<QuestionAnswerPair> AllQuestionAnswerPairs { get; private set; }
+        public ObservableCollection<QuestionAnswerPair> AllQuestionAnswerPairs { get; private set; }
 
-        public List<QuestionAnswerPair> QuestionAnswerPairsWithoutCategory { get; private set; }
+        public ObservableCollection<QuestionAnswerPair> QuestionAnswerPairsWithoutCategory { get; private set; }
 
-        private List<QuestionAnswerPair> _selectedQuestionAnswerPairs;
-        public List<QuestionAnswerPair> SelectedQuestionAnswerPairs
+        private ObservableCollection<QuestionAnswerPair> _selectedQuestionAnswerPairs;
+        public ObservableCollection<QuestionAnswerPair> SelectedQuestionAnswerPairs
         {
             get => _selectedQuestionAnswerPairs;
             set => SetProperty(ref _selectedQuestionAnswerPairs, value);
@@ -95,7 +96,24 @@ namespace QuestionProjectOffice.ViewModels.Windows
 
         private void ExecuteDeleteQuestionCategoryCommand()
         {
+            _dbContext.QuestionCategories.Remove(SelectedQuestionCategory!);
 
+            SelectedQuestionCategory!.QuestionAnswerPairs.ToList().ForEach(p => 
+            { 
+                p.QuestionCategoryId = null; 
+                p.QuestionCategory = null; 
+            });
+
+            QuestionAnswerPairsWithoutCategory = new(_dbContext.QuestionAnswerPairs.
+                Where(p => p.QuestionCategory == null).
+                OrderBy(p => p.DateTime).ToList());
+
+            QuestionCategories.Remove(SelectedQuestionCategory);
+
+            SelectedQuestionCategory = null;
+            SelectedQuestionAnswerPairs = AllQuestionAnswerPairs;
+            
+            _dbContext.SaveChanges();
         }
 
         private bool CanExecuteDeleteQuestionCategoryCommand() => _selectedQuestionCategory != null;
@@ -154,7 +172,11 @@ namespace QuestionProjectOffice.ViewModels.Windows
 
         private void ExecuteDeleteQuestionCommand()
         {
+            _dbContext.QuestionAnswerPairs.Remove(SelectedQuestionAnswerPair!);
 
+            AllQuestionAnswerPairs.Remove(SelectedQuestionAnswerPair!);
+
+            _dbContext.SaveChanges();
         }
 
         private bool CanExecuteDeleteQuestionCommand() => _selectedQuestionAnswerPair != null;
@@ -176,12 +198,12 @@ namespace QuestionProjectOffice.ViewModels.Windows
             #endregion
 
             #region Свойства
-            QuestionCategories = _dbContext.QuestionCategories.OrderBy(c => c.Name).ToList();
+            QuestionCategories = new(_dbContext.QuestionCategories.OrderBy(c => c.Name).ToList());
             foreach (var c in QuestionCategories)
-                c.QuestionAnswerPairs = _dbContext.QuestionAnswerPairs.Where(p => p.QuestionCategoryId == c.Id).ToList();
+                c.QuestionAnswerPairs = new(_dbContext.QuestionAnswerPairs.Where(p => p.QuestionCategoryId == c.Id).ToList());
 
-            AllQuestionAnswerPairs = _dbContext.QuestionAnswerPairs.OrderBy(p => p.DateTime).ToList();
-            QuestionAnswerPairsWithoutCategory = _dbContext.QuestionAnswerPairs.Where(p => p.QuestionCategory == null).OrderBy(p => p.DateTime).ToList();
+            AllQuestionAnswerPairs = new(_dbContext.QuestionAnswerPairs.OrderBy(p => p.DateTime).ToList());
+            QuestionAnswerPairsWithoutCategory = new(_dbContext.QuestionAnswerPairs.Where(p => p.QuestionCategory == null).OrderBy(p => p.DateTime).ToList());
             _selectedQuestionAnswerPairs = AllQuestionAnswerPairs;
             #endregion
 
