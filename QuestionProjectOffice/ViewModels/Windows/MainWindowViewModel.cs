@@ -163,7 +163,7 @@ namespace QuestionProjectOffice.ViewModels.Windows
         #region Создания контекста базы данных и заполнения её
         private static bool CreateDbContext(out QuestionProjectOfficeContext dbContext)
         {
-            var connectionString = ConnectionQuestionProjectOfficeDb.PostgreSqlConnectionString;
+            var connectionString = ConnectionQuestionProjectOfficeDb.LocalPostgreSqlConnectionString;
             var providerDb = ProviderDb.PostgreSql;
 
             var options = QuestionProjectOfficeContext.BuildDbContextOptions(connectionString, providerDb);
