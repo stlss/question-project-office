@@ -176,7 +176,11 @@ namespace QuestionProjectOffice.ViewModels.Windows
 
             AllQuestionAnswerPairs.Remove(SelectedQuestionAnswerPair!);
 
-            _dbContext.SaveChanges();
+            if (SelectedQuestionAnswerPair!.QuestionCategory == null)
+                QuestionAnswerPairsWithoutCategory.Remove(SelectedQuestionAnswerPair!);
+
+            _dbContext.SaveChanges(); 
+
         }
 
         private bool CanExecuteDeleteQuestionCommand() => _selectedQuestionAnswerPair != null;
